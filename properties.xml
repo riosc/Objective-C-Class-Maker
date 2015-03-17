@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<object>
+	<name>CESPDFFile</name>
+	<properties>
+		<!-- PROPERTY -->
+		<property>
+			<name>fileID</name>
+			<type>NSString</type>
+			<pointer>YES</pointer>
+		</property>
+		<!-- PROPERTY -->
+		<property>
+			<name>modified</name>
+			<type>NSDate</type>
+			<pointer>YES</pointer>
+		</property>
+	</properties>
+</object>

@@ -1,0 +1,8 @@
+<project name="TranformXml" default="TransformFile">
+	<target name="TransformFile">
+		<!-- create .h file -->
+		<xslt in="properties.xml" out="CESPDFFile.h" style="template_h.xsl"/>
+		<xslt in="properties.xml" out="CESPDFFile.m" style="template_m.xsl"/>
+
+	</target>
+</project>
