@@ -10,6 +10,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:text>//</xsl:text><xsl:text>&#xA;</xsl:text>
 <xsl:text>//</xsl:text> Created by Carlos Rios on 2/26/15.
 <xsl:text>//</xsl:text> Copyright (c) 2015 Carlos Rios. All rights reserved.
+<xsl:text>//</xsl:text> <xsl:text>&#xA;</xsl:text>
+<xsl:text>//</xsl:text> <xsl:value-of select="object/name"/>.h is generate through Apache ANT script. visit https://github.com/riosc/Objective-C-Class-Maker
 
 #import &#x3c;Foundation/Foundation.h&#x3e;
 #import "CRParserProtocol.h"

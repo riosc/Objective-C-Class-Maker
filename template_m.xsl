@@ -10,8 +10,11 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:text>//</xsl:text><xsl:text>&#xA;</xsl:text>
 <xsl:text>//</xsl:text> Created by Carlos Rios on 2/26/15.
 <xsl:text>//</xsl:text> Copyright (c) 2015 Carlos Rios. All rights reserved.
+<xsl:text>//</xsl:text> <xsl:text>&#xA;</xsl:text>
+<xsl:text>//</xsl:text> <xsl:value-of select="object/name"/>.m is generate through Apache ANT script. visit https://github.com/riosc/Objective-C-Class-Maker
 
 #import "<xsl:value-of select="object/name"/>.h"
+#import "NSDictionary+Safe.h"
 #define NOT_NIL(var) (var) ? var : @""
 
 <xsl:for-each select="object/properties/property">
@@ -25,7 +28,9 @@ static NSString * const k<xsl:value-of select="name"/>Key = @"<xsl:value-of sele
     self = [super init];
     if (self) {
 	<xsl:for-each select="object/properties/property">
-	_<xsl:value-of select="name"/> = [dict safeObjectForKey:k<xsl:value-of select="name"/>Key];</xsl:for-each>
+	_<xsl:value-of select="name"/> = <xsl:choose><xsl:when test="pointer &#x3d; 'YES'">[dict safeObjectForKey:k<xsl:value-of select="name"/>Key];</xsl:when><xsl:otherwise>[[dict safeObjectForKey:k<xsl:value-of select="name"/>Key] <xsl:choose>
+  <xsl:when test="type &#x3d; 'NSUInteger'">integerValue</xsl:when><xsl:otherwise>doubleValue</xsl:otherwise>
+</xsl:choose>];</xsl:otherwise></xsl:choose></xsl:for-each>
     }
     return self;
 }
@@ -60,7 +65,9 @@ static NSString * const k<xsl:value-of select="name"/>Key = @"<xsl:value-of sele
     if (self)
     {
         <xsl:for-each select="object/properties/property">
-        _<xsl:value-of select="name"/> = [coder decodeObjectForKey:k<xsl:value-of select="name"/>Key];</xsl:for-each>
+        _<xsl:value-of select="name"/> = <xsl:choose><xsl:when test="pointer &#x3d; 'YES'">[coder decodeObjectForKey:k<xsl:value-of select="name"/>Key];</xsl:when><xsl:otherwise>[[coder decodeObjectForKey:k<xsl:value-of select="name"/>Key] <xsl:choose>
+  <xsl:when test="type &#x3d; 'NSUInteger'">integerValue</xsl:when><xsl:otherwise>doubleValue</xsl:otherwise>
+</xsl:choose>];</xsl:otherwise></xsl:choose></xsl:for-each>
     }
     
     return self;
@@ -69,7 +76,7 @@ static NSString * const k<xsl:value-of select="name"/>Key = @"<xsl:value-of sele
 - (void)encodeWithCoder:(NSCoder *)coder
 {
     <xsl:for-each select="object/properties/property">
-    [coder encodeObject:NOT_NIL(_<xsl:value-of select="name"/>) forKey:k<xsl:value-of select="name"/>Key];</xsl:for-each>
+    [coder encodeObject:<xsl:choose> <xsl:when test="pointer &#x3d; 'YES'"> NOT_NIL(_<xsl:value-of select="name"/>) forKey:k<xsl:value-of select="name"/>Key];</xsl:when> <xsl:otherwise>NOT_NIL(@(_<xsl:value-of select="name"/>)) forKey:k<xsl:value-of select="name"/>Key];</xsl:otherwise></xsl:choose></xsl:for-each>
 }
 
 #pragma mark -- NSCopy Protocol
@@ -78,7 +85,7 @@ static NSString * const k<xsl:value-of select="name"/>Key = @"<xsl:value-of sele
 {
     <xsl:value-of select="object/name"/> * newObject        = [[self class] allocWithZone:zone];
     <xsl:for-each select="object/properties/property">
-    newObject->_<xsl:value-of select="name"/>   = [_<xsl:value-of select="name"/> copy];</xsl:for-each>
+    newObject->_<xsl:value-of select="name"/>   = <xsl:choose><xsl:when test="pointer &#x3d; 'YES'">[_<xsl:value-of select="name"/> copy];</xsl:when><xsl:otherwise>_<xsl:value-of select="name"/>;</xsl:otherwise></xsl:choose></xsl:for-each>
     
     return newObject;
 }
