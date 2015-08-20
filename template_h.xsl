@@ -19,7 +19,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 @interface <xsl:value-of select="object/name"/> : NSObject &#x3c;CRParserProtocol, NSCoding, NSCopying&#x3e;
 
 <xsl:for-each select="object/properties/property">
-@property (nonatomic, <xsl:choose><xsl:when test="pointer &#x3d; 'YES'">strong</xsl:when><xsl:otherwise>assign</xsl:otherwise>
+@property (nonatomic, <xsl:choose><xsl:when test="pointer &#x3d; 'YES'">copy</xsl:when><xsl:otherwise>assign</xsl:otherwise>
 </xsl:choose>, readonly) <xsl:value-of select="type"/><xsl:text disable-output-escaping="no"> </xsl:text><xsl:if test="pointer &#x3d; 'YES'">* </xsl:if><xsl:value-of select="name"/>;</xsl:for-each>
 
 <xsl:text>&#xA;</xsl:text>

@@ -15,7 +15,6 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 #import "<xsl:value-of select="object/name"/>.h"
 #import "NSDictionary+Safe.h"
-#define NOT_NIL(var) (var) ? var : @""
 
 <xsl:for-each select="object/properties/property">
 static NSString * const k<xsl:value-of select="name"/>Key = @"<xsl:value-of select="name"/>";</xsl:for-each>
@@ -37,10 +36,13 @@ static NSString * const k<xsl:value-of select="name"/>Key = @"<xsl:value-of sele
 
 - (id) serializeAttributes
 {
-    return @{
-		    <xsl:for-each select="object/properties/property">
-			k<xsl:value-of select="name"/>Key : <xsl:choose> <xsl:when test="pointer &#x3d; 'YES'"> NOT_NIL(_<xsl:value-of select="name"/>),</xsl:when> <xsl:otherwise>NOT_NIL(@(_<xsl:value-of select="name"/>)),</xsl:otherwise></xsl:choose></xsl:for-each>
-             };
+    NSMutableDictionary * attrs = [NSMutableDictionary new];
+
+    <xsl:for-each select="object/properties/property">
+    if (_<xsl:value-of select="name"/>) attrs[k<xsl:value-of select="name"/>Key] = <xsl:choose> <xsl:when test="pointer &#x3d; 'YES'"> _<xsl:value-of select="name"/>;</xsl:when> <xsl:otherwise>@(_<xsl:value-of select="name"/>);</xsl:otherwise></xsl:choose></xsl:for-each>
+
+
+    return attrs;             
 }
 
 + (NSArray *) objsFromJSONArray:(NSArray *)array
@@ -76,7 +78,7 @@ static NSString * const k<xsl:value-of select="name"/>Key = @"<xsl:value-of sele
 - (void)encodeWithCoder:(NSCoder *)coder
 {
     <xsl:for-each select="object/properties/property">
-    [coder encodeObject:<xsl:choose> <xsl:when test="pointer &#x3d; 'YES'"> NOT_NIL(_<xsl:value-of select="name"/>) forKey:k<xsl:value-of select="name"/>Key];</xsl:when> <xsl:otherwise>NOT_NIL(@(_<xsl:value-of select="name"/>)) forKey:k<xsl:value-of select="name"/>Key];</xsl:otherwise></xsl:choose></xsl:for-each>
+    if (_<xsl:value-of select="name"/>) [coder encodeObject:<xsl:choose> <xsl:when test="pointer &#x3d; 'YES'">_<xsl:value-of select="name"/> forKey:k<xsl:value-of select="name"/>Key];</xsl:when> <xsl:otherwise>@(_<xsl:value-of select="name"/>) forKey:k<xsl:value-of select="name"/>Key];</xsl:otherwise></xsl:choose></xsl:for-each>
 }
 
 #pragma mark -- NSCopy Protocol
